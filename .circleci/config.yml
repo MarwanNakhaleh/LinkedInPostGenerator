@@ -14,7 +14,7 @@ orbs:
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  build-and-test: # This is the name of the job, feel free to change it to better match what you're trying to do!
+  build-test-and-deploy: # This is the name of the job, feel free to change it to better match what you're trying to do!
     # These next lines defines a Docker executors: https://circleci.com/docs/2.0/executor-types/
     # You can specify an image from Dockerhub or use one of the convenience images from CircleCI's Developer Hub
     # A list of available CircleCI Docker convenience images are available here: https://circleci.com/developer/images/image/cimg/python
@@ -37,6 +37,21 @@ jobs:
           name: Run tests
           # This assumes pytest is installed via the install-package step above
           command: pytest
+      - run: |
+          python -m pip install --upgrade pip
+          pip install awscli
+          pip install aws-sam-cli
+          pip install cfn-lint
+          rm -rf test/
+          pip install -r requirements.txt -t .
+          cfn-lint template.yaml
+          sam validate
+          aws cloudformation deploy --stack-name LinkedInPosterDeploy --template-file deploy_bucket.yaml --no-fail-on-empty-changeset
+          sam build --debug
+          sam package --s3-bucket linkedin-poster-deploy --output-template-file out.yaml --region us-east-1
+          sam deploy --template-file out.yaml --stack-name LinkedInPoster --region us-east-1 --no-fail-on-empty-changeset  --capabilities CAPABILITY_NAMED_IAM
+          chmod +x cleanup.sh
+          ./cleanup.sh
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
@@ -44,4 +59,4 @@ workflows:
   sample: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
-      - build-and-test
+      - build-test-and-deploy
