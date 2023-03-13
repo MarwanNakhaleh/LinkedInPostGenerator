@@ -52,7 +52,7 @@ jobs:
           aws cloudformation deploy --stack-name LinkedInPosterDeploy --template-file deploy_bucket.yaml --no-fail-on-empty-changeset
           sam build --debug
           sam package --s3-bucket linkedin-poster-deploy --output-template-file out.yaml --region us-east-1
-          sam deploy --template-file out.yaml --stack-name LinkedInPoster --region us-east-1 --no-fail-on-empty-changeset  --capabilities CAPABILITY_NAMED_IAM
+          sam deploy --template-file out.yaml --stack-name LinkedInPoster --region us-east-1 --no-fail-on-empty-changeset --capabilities CAPABILITY_NAMED_IAM --parameter-overrides AccessToken=$ACCESS_TOKEN
           chmod +x cleanup.sh
           ./cleanup.sh
 
