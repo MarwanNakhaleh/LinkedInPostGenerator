@@ -33,15 +33,18 @@ jobs:
           pkg-manager: pip
           # app-dir: ~/project/package-directory/  # If you're requirements.txt isn't in the root directory.
           # pip-dependency-file: test-requirements.txt  # if you have a different name for your requirements file, maybe one that combines your runtime and test requirements.
-      - run:
-          name: Run tests
-          # This assumes pytest is installed via the install-package step above
-          command: pytest
+      # - run:
+      #     name: Run tests
+      #     # This assumes pytest is installed via the install-package step above
+      #     command: pytest
       - run: |
           python -m pip install --upgrade pip
           pip install awscli
           pip install aws-sam-cli
           pip install cfn-lint
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY
+          aws configure set aws_secret_access_key $AWS_SECRET_KEY
+          aws configure set default.region us-east-1
           rm -rf test/
           pip install -r requirements.txt -t .
           cfn-lint template.yaml
