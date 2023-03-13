@@ -47,12 +47,25 @@ Resources:
       AttributeDefinitions:
         - AttributeName: "id"
           AttributeType: "S"
+        - AttributeName: "hasBeenPosted"
+          AttributeType: "S"
       BillingMode: "PAY_PER_REQUEST"
       ContributorInsightsSpecification:
         Enabled: false
       KeySchema:
         - AttributeName: "id"
           KeyType: HASH
+        - AttributeName: "hasBeenPosted"
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: unpostedPosts
+          KeySchema:
+            - AttributeName: "id"
+              KeyType: HASH
+            - AttributeName: "hasBeenPosted"
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: false
       TableClass: "STANDARD"
