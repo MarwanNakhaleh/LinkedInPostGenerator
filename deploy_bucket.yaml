@@ -1,0 +1,12 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Resources:
+  DeployBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: linkedin-poster-deploy
+      VersioningConfiguration:
+        Status: Enabled
+      Tags:
+        - Key: Application
+          Value: linkedin-poster
