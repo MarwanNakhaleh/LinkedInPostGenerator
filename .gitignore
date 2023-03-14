@@ -14,3 +14,5 @@ pip-selfcheck.json
 
 # seeding posts DB from file for the time being, will create separate API to update table later
 seed/upsert_posts.sh
+# it has my secrets in here and I'm too lazy to set my LinkedIn access token as an environment variable
+deploy.sh

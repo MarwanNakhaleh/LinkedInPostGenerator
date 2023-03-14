@@ -7,7 +7,9 @@ import requests
 from random_selection import get_random_category, get_unposted_post
 from helpers import dynamodb_table
 
-logging.basicConfig(format="%(asctime)s: %(levelname)s: %(message)s", level=logging.INFO)
+logging.basicConfig(format="%(asctime)s: %(levelname)s: %(message)s")
+log = logging.getLogger("LinkedInPoster")
+log.setLevel(logging.INFO)
 
 post_without_link = {
     "author": "urn:li:person:_Lng4gTp4g",
@@ -82,17 +84,20 @@ def post_to_linkedin(payload):
     print(r.status_code)
     return r.status_code
     
-def set_has_been_posted_to_true(id, table):
+def set_has_been_posted_to_true(table, id):
+    log.info("given post ID: " + id)
     table.update_item(
-        Key={
-            'id': id,
+        Key = {
+            'id': id
         },
-        UpdateExpression="set hasBeenPosted = :r",
-        ExpressionAttributeValues={
-            ':r': 'true',
+        AttributeUpdates = {
+            "hasBeenPosted": {
+                "Action": "PUT", 
+                "Value": "true"
+            }
         }
     )
-    logging.info("post")
+    log.info("post")
 
 def lambda_handler(event, context):
     posts_table = dynamodb_table(os.environ["POST_TABLE"])
@@ -100,11 +105,15 @@ def lambda_handler(event, context):
     category = get_random_category(categories_table)
     if category != "":
         post = get_unposted_post(posts_table, "story")
-        logging.info("Retrieved post " + post["id"])
+        try:
+            post_id = post["id"]
+        except KeyError:
+            quit()
+        log.info("Retrieved post " + post_id)
     payload = generate_linkedin_payload(post)
     posted = post_to_linkedin(payload)
     if(posted == 201):
-        set_has_been_posted_to_true(post["id"])
+        set_has_been_posted_to_true(posts_table, post_id)
 
 if __name__ == "__main__":
     linkedin_request_headers = {

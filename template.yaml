@@ -10,9 +10,12 @@ Parameters:
   CategoryTableName:
     Type: String
     Default: LinkedInCategories
-  GSIName:
+  GSIUnpostedPosts:
     Type: String
     Default: unpostedPosts
+  GSIID:
+    Type: String
+    Default: ids
 
 Resources:
   LinkedInPosterLambdaRole:
@@ -51,7 +54,7 @@ Resources:
                       - ":table/"
                       - !Ref PostTableName
                       - "/index/"
-                      - !Ref GSIName
+                      - !Ref GSIUnpostedPosts
               - Effect: Allow
                 Action: "dynamodb:Scan"
                 Resource:
@@ -83,6 +86,8 @@ Resources:
     Properties:
       TableName: !Ref PostTableName
       AttributeDefinitions:
+        - AttributeName: "id"
+          AttributeType: "S"
         - AttributeName: "category"
           AttributeType: "S"
         - AttributeName: "hasBeenPosted"
@@ -91,17 +96,21 @@ Resources:
       ContributorInsightsSpecification:
         Enabled: false
       KeySchema:
-        - AttributeName: "category"
+        - AttributeName: "id"
           KeyType: HASH
-        - AttributeName: "hasBeenPosted"
-          KeyType: RANGE
       GlobalSecondaryIndexes:
-        - IndexName: !Ref GSIName
+        - IndexName: !Ref GSIUnpostedPosts
           KeySchema:
             - AttributeName: "category"
               KeyType: HASH
             - AttributeName: "hasBeenPosted"
               KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+        - IndexName: !Ref GSIID
+          KeySchema:
+            - AttributeName: "id"
+              KeyType: HASH
           Projection:
             ProjectionType: ALL
       PointInTimeRecoverySpecification:
