@@ -86,8 +86,6 @@ Resources:
       GlobalSecondaryIndexes:
         - IndexName: !Ref GSIName
           KeySchema:
-            - AttributeName: "id"
-              KeyType: HASH
             - AttributeName: "hasBeenPosted"
               KeyType: RANGE
           Projection:
