@@ -11,3 +11,6 @@ pyvenv.cfg
 .venv
 pip-selfcheck.json
 .DS_Store
+
+# seeding posts DB from file for the time being, will create separate API to update table later
+seed/upsert_posts.sh

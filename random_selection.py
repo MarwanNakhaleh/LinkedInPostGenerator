@@ -24,7 +24,7 @@ def get_random_category():
     table = dynamodb.Table(os.environ["CATEGORY_TABLE"]) 
     try:
         response = table.scan()
-        return random.choice(response["Items"])
+        return random.choice(response["Items"])["category"]
     except Exception as e:
         logging.ERROR("Unable to get table items: " + e)
         return ""

@@ -4,7 +4,8 @@ I like posting to LinkedIn and sharing my thoughts. I'm just not very consistent
 ## Post Table Schema
 ```json
 {
-    "hasBeenPosted": false,
+    "hasBeenPosted": "", // string because GSI
+    "category": "",
     "content": "",
     "linkUrl": "", // blank if no link
     "onlyFriends": false
