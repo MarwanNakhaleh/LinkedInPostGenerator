@@ -2,12 +2,10 @@ import os
 import logging
 import json
 
-import boto3
-from boto3.dynamodb.conditions import Key
-
 import requests
 
 from random_selection import get_random_category, get_unposted_post
+from helpers import dynamodb_table
 
 logging.basicConfig(format="%(asctime)s: %(levelname)s: %(message)s", level=logging.INFO)
 
@@ -82,13 +80,31 @@ def post_to_linkedin(payload):
     r = requests.post('https://api.linkedin.com/v2/ugcPosts', headers=linkedin_request_headers, data=json.dumps(payload))
     print(r.json())
     print(r.status_code)
+    return r.status_code
+    
+def set_has_been_posted_to_true(id, table):
+    table.update_item(
+        Key={
+            'id': id,
+        },
+        UpdateExpression="set hasBeenPosted = :r",
+        ExpressionAttributeValues={
+            ':r': 'true',
+        }
+    )
+    logging.info("post")
 
 def lambda_handler(event, context):
-    category = get_random_category()
+    posts_table = dynamodb_table(os.environ["POST_TABLE"])
+    categories_table = dynamodb_table(os.environ["CATEGORY_TABLE"])
+    category = get_random_category(categories_table)
     if category != "":
-        post = get_unposted_post("story")
+        post = get_unposted_post(posts_table, "story")
+        logging.info("Retrieved post " + post["id"])
     payload = generate_linkedin_payload(post)
-    post_to_linkedin(payload)
+    posted = post_to_linkedin(payload)
+    if(posted == 201):
+        set_has_been_posted_to_true(post["id"])
 
 if __name__ == "__main__":
     linkedin_request_headers = {

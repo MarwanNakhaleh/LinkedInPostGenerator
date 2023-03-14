@@ -1,15 +1,11 @@
 import random
-import os
 import logging
 
-import boto3
 from boto3.dynamodb.conditions import Key
 
 logging.basicConfig(format="%(asctime)s: %(levelname)s: %(message)s", level=logging.ERROR)
 
-def get_unposted_post(category):
-    dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
-    table = dynamodb.Table(os.environ["POST_TABLE"]) 
+def get_unposted_post(table, category): 
     resp = table.query(
         IndexName="unpostedPosts",
         KeyConditionExpression=Key('hasBeenPosted').eq('false') & Key("category").eq(category)
@@ -19,9 +15,7 @@ def get_unposted_post(category):
     except:
         return {}
     
-def get_random_category():
-    dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
-    table = dynamodb.Table(os.environ["CATEGORY_TABLE"]) 
+def get_random_category(table):
     try:
         response = table.scan()
         return random.choice(response["Items"])["category"]
