@@ -4,9 +4,12 @@ Transform: AWS::Serverless-2016-10-31
 Parameters:
   AccessToken:
     Type: String
-  TableName:
+  PostTableName:
     Type: String
     Default: LinkedInPosts
+  CategoryTableName:
+    Type: String
+    Default: LinkedInCategories
   GSIName:
     Type: String
     Default: unpostedPosts
@@ -71,7 +74,7 @@ Resources:
     UpdateReplacePolicy: Delete
     DeletionPolicy: Delete
     Properties:
-      TableName: !Ref TableName
+      TableName: !Ref PostTableName
       AttributeDefinitions:
         - AttributeName: "category"
           AttributeType: "S"
@@ -94,6 +97,28 @@ Resources:
               KeyType: RANGE
           Projection:
             ProjectionType: ALL
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: false
+      TableClass: "STANDARD"
+      Tags:
+        - Key: Application
+          Value: linkedin-poster
+
+  LinkedInCategoryTable:
+    Type: AWS::DynamoDB::Table
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
+    Properties:
+      TableName: !Ref CategoryTableName
+      AttributeDefinitions:
+        - AttributeName: "category"
+          AttributeType: "S"
+      BillingMode: "PAY_PER_REQUEST"
+      ContributorInsightsSpecification:
+        Enabled: false
+      KeySchema:
+        - AttributeName: "category"
+          KeyType: HASH
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: false
       TableClass: "STANDARD"

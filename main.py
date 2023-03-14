@@ -1,5 +1,6 @@
 import os
 import logging
+import random
 
 import boto3
 from boto3.dynamodb.conditions import Key
@@ -59,8 +60,10 @@ def get_unposted_post(category):
         IndexName="unpostedPosts",
         KeyConditionExpression=Key('hasBeenPosted').eq('false') & Key("category").eq(category)
     )
-    for item in resp['Items']:
-        print(item)
+    try:
+        return random.choice(resp['Items'])
+    except:
+        return {}
 
 def generate_linkedin_payload():
     pass
