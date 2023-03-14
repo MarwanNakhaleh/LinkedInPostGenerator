@@ -68,10 +68,12 @@ Resources:
 
   LinkedInPostTable:
     Type: AWS::DynamoDB::Table
+    UpdateReplacePolicy: Delete
+    DeletionPolicy: Delete
     Properties:
       TableName: !Ref TableName
       AttributeDefinitions:
-        - AttributeName: "id"
+        - AttributeName: "category"
           AttributeType: "S"
         - AttributeName: "hasBeenPosted"
           AttributeType: "S"
@@ -79,13 +81,15 @@ Resources:
       ContributorInsightsSpecification:
         Enabled: false
       KeySchema:
-        - AttributeName: "id"
+        - AttributeName: "category"
           KeyType: HASH
         - AttributeName: "hasBeenPosted"
           KeyType: RANGE
       GlobalSecondaryIndexes:
         - IndexName: !Ref GSIName
           KeySchema:
+            - AttributeName: "category"
+              KeyType: HASH
             - AttributeName: "hasBeenPosted"
               KeyType: RANGE
           Projection:

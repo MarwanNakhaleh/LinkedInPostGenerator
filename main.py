@@ -52,12 +52,12 @@ post_with_link = {
     }
 }
 
-def get_unposted_post():
+def get_unposted_post(category):
     dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
     table = dynamodb.Table("LinkedInPosts") 
-    resp = table.query(
+    resp = table.scan(
         IndexName="unpostedPosts",
-        KeyConditionExpression=Key('hasBeenPosted').eq('false'),
+        KeyConditionExpression=Key('hasBeenPosted').eq('false') & Key("category").eq(category),
     )
     for item in resp['Items']:
         print(item)
