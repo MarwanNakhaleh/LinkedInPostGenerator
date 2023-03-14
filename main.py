@@ -55,9 +55,9 @@ post_with_link = {
 def get_unposted_post(category):
     dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
     table = dynamodb.Table("LinkedInPosts") 
-    resp = table.scan(
+    resp = table.query(
         IndexName="unpostedPosts",
-        KeyConditionExpression=Key('hasBeenPosted').eq('false') & Key("category").eq(category),
+        KeyConditionExpression=Key('hasBeenPosted').eq('false') & Key("category").eq(category)
     )
     for item in resp['Items']:
         print(item)
@@ -66,7 +66,7 @@ def generate_linkedin_payload():
     pass
 
 def lambda_handler(event, context):
-    get_unposted_post()
+    get_unposted_post("story")
 
 if __name__ == "__main__":
     linkedin_request_headers = {
