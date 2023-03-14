@@ -48,7 +48,7 @@ Resources:
                       - ":"
                       - !Ref AWS::AccountId
                       - ":table/"
-                      - !Ref TableName
+                      - !Ref CategoryTableName
                       - "/index/"
                       - !Ref GSIName
 
