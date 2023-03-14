@@ -40,7 +40,6 @@ Resources:
                 Action: "dynamodb:Query"
                 Resource:
                   - !GetAtt LinkedInPostTable.Arn
-                  # arn:aws:dynamodb:us-east-1:xxxxxxxxxxxx:table/LinkedInPosts/index/unpostedPosts
                   - !Join
                     - ""
                     - - "arn:aws:dynamodb:"
@@ -51,6 +50,10 @@ Resources:
                       - !Ref CategoryTableName
                       - "/index/"
                       - !Ref GSIName
+              - Effect: Allow
+                Action: "dynamodb:Scan"
+                Resource:
+                  - !GetAtt LinkedInCategoryTable.Arn
 
   LinkedInPosterLambda:
     Type: AWS::Serverless::Function
@@ -66,6 +69,8 @@ Resources:
       Environment:
         Variables:
           ACCESS_TOKEN: !Ref AccessToken
+          POST_TABLE: !Ref PostTableName
+          CATEGORY_TABLE: !Ref CategoryTableName
       Tags:
         ApplicationName: linkedin-poster
 

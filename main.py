@@ -7,6 +7,8 @@ from boto3.dynamodb.conditions import Key
 
 import requests
 
+from random_selection import get_random_category, get_unposted_post
+
 logging.basicConfig(format="%(asctime)s: %(levelname)s: %(message)s", level=logging.INFO)
 
 post_without_link = {
@@ -53,23 +55,14 @@ post_with_link = {
     }
 }
 
-def get_unposted_post(category):
-    dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
-    table = dynamodb.Table("LinkedInPosts") 
-    resp = table.query(
-        IndexName="unpostedPosts",
-        KeyConditionExpression=Key('hasBeenPosted').eq('false') & Key("category").eq(category)
-    )
-    try:
-        return random.choice(resp['Items'])
-    except:
-        return {}
-
 def generate_linkedin_payload():
     pass
 
 def lambda_handler(event, context):
-    get_unposted_post("story")
+    category = get_random_category()
+    if category != "":
+        post = get_unposted_post(category)
+        print(post)
 
 if __name__ == "__main__":
     linkedin_request_headers = {
