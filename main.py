@@ -78,5 +78,5 @@ if __name__ == "__main__":
         "Authorization": "Bearer " + os.environ["ACCESS_TOKEN"]
     }
     payload = generate_linkedin_payload()
-    r = requests.post('https://httpbin.org/post', headers=linkedin_request_headers, data=payload)
+    r = requests.post('https://api.linkedin.com/v2/ugcPosts', headers=linkedin_request_headers, data=payload)
     
