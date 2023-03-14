@@ -47,7 +47,7 @@ Resources:
                       - ":"
                       - !Ref AWS::AccountId
                       - ":table/"
-                      - !Ref CategoryTableName
+                      - !Ref PostTableName
                       - "/index/"
                       - !Ref GSIName
               - Effect: Allow
