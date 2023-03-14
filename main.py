@@ -1,5 +1,12 @@
-import requests
 import os
+import logging
+
+import boto3
+from boto3.dynamodb.conditions import Key
+
+import requests
+
+logging.basicConfig(format="%(asctime)s: %(levelname)s: %(message)s", level=logging.INFO)
 
 post_without_link = {
     "author": "urn:li:person:_Lng4gTp4g",
@@ -46,10 +53,20 @@ post_with_link = {
 }
 
 def get_unposted_post():
-    pass    
+    dynamodb = boto3.resource("dynamodb", region_name="us-east-1")
+    table = dynamodb.Table("LinkedInPosts") 
+    resp = table.query(
+        IndexName="unpostedPosts",
+        KeyConditionExpression=Key('hasBeenPosted').eq('false'),
+    )
+    for item in resp['Items']:
+        print(item)
 
 def generate_linkedin_payload():
     pass
+
+def lambda_handler(event, context):
+    get_unposted_post()
 
 if __name__ == "__main__":
     linkedin_request_headers = {
@@ -59,3 +76,4 @@ if __name__ == "__main__":
     }
     payload = generate_linkedin_payload()
     r = requests.post('https://httpbin.org/post', headers=linkedin_request_headers, data=payload)
+    
