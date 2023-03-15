@@ -79,6 +79,14 @@ Resources:
       Tags:
         ApplicationName: linkedin-poster
 
+  LinkedInPosterLambdaSchedule:
+    Type: AWS::Events::Rule
+    Properties:
+      ScheduleExpression: "cron(0 8,12,16 ? * MON-FRI *)"
+      Targets:
+        - Arn: !GetAtt LinkedInPosterLambda.Arn
+          Id: "1"
+
   LinkedInPostTable:
     Type: AWS::DynamoDB::Table
     UpdateReplacePolicy: Delete
