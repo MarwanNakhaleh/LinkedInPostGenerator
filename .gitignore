@@ -16,3 +16,6 @@ pip-selfcheck.json
 seed/upsert_posts.sh
 # it has my secrets in here and I'm too lazy to set my LinkedIn access token as an environment variable
 deploy.sh
+
+# lol CircleCI was down on 3/14/2023
+.aws-sam/
