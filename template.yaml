@@ -7,6 +7,9 @@ Parameters:
   PostTableName:
     Type: String
     Default: LinkedInPosts
+  LambdaName:
+    Type: String
+    Default: LinkedInPoster
   CategoryTableName:
     Type: String
     Default: LinkedInCategories
@@ -63,7 +66,7 @@ Resources:
   LinkedInEventTriggerPermission:
     Type: AWS::Lambda::Permission
     Properties:
-      FunctionName: LinkedInPosterLambda
+      FunctionName: !Ref LambdaName
       Action: "lambda:InvokeFunction"
       Principal: "events.amazonaws.com"
       SourceArn: !GetAtt LinkedInPosterLambdaSchedule.Arn
@@ -93,7 +96,7 @@ Resources:
       Runtime: python3.9
       CodeUri: .
       Timeout: 30
-      FunctionName: LinkedInPoster
+      FunctionName: !Ref LambdaName
       MemorySize: 128
       Role: !GetAtt LinkedInPosterLambdaRole.Arn
       Environment:
