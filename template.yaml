@@ -110,7 +110,7 @@ Resources:
   LinkedInPosterLambdaSchedule:
     Type: AWS::Events::Rule
     Properties:
-      ScheduleExpression: "cron(0 8,16 ? * MON-FRI *)"
+      ScheduleExpression: "cron(0 16 ? * MON-FRI *)"
       Targets:
         - Arn: !GetAtt LinkedInPosterLambda.Arn
           Id: "1"
