@@ -58,14 +58,14 @@ post_with_link = {
 def generate_linkedin_payload(post):
     has_link = None
     try:
-        has_link = post["linkUrl"]
+        has_link = post["links"]
     except KeyError:
         pass
     try:
         only_friends = post["onlyFriends"]
     except KeyError:
         pass
-    if has_link:
+    if has_link and has_link != "":
         new_post = post_with_link
         new_post["specificContent"]["com.linkedin.ugc.ShareContent"]
     else:
