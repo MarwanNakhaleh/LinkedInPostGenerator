@@ -180,8 +180,13 @@ Resources:
           Value: linkedin-poster
 
 Outputs:
-  DynamoDB:
+  PostTable:
     Description: A reference to the posts table ARN
     Value: !GetAtt LinkedInPostTable.Arn
     Export:
       Name: LinkedInPostTableARN
+  CategoryTable:
+    Description: A reference to the categories table ARN
+    Value: !GetAtt LinkedInCategoryTable.Arn
+    Export:
+      Name: LinkedInCategoryTableARN
