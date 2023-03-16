@@ -104,7 +104,7 @@ def lambda_handler(event, context):
     categories_table = dynamodb_table(os.environ["CATEGORY_TABLE"])
     category = get_random_category(categories_table)
     if category != "":
-        post = get_unposted_post(posts_table, "story")
+        post = get_unposted_post(posts_table, category)
         try:
             post_id = post["id"]
         except KeyError:

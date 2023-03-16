@@ -60,6 +60,23 @@ Resources:
                 Resource:
                   - !GetAtt LinkedInCategoryTable.Arn
 
+  LinkedInEventTriggerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: LinkedInEventTriggerRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+                - "events.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
   LinkedInPosterLambda:
     Type: AWS::Serverless::Function
     Description: description
@@ -86,6 +103,7 @@ Resources:
       Targets:
         - Arn: !GetAtt LinkedInPosterLambda.Arn
           Id: "1"
+      RoleArn: !GetAtt LinkedInEventTriggerRole.Arn
 
   LinkedInPostTable:
     Type: AWS::DynamoDB::Table
@@ -149,3 +167,10 @@ Resources:
       Tags:
         - Key: Application
           Value: linkedin-poster
+
+Outputs:
+  DynamoDB:
+    Description: A reference to the posts table ARN
+    Value: !GetAtt LinkedInPostTable.Arn
+    Export:
+      Name: LinkedInPostTableARN
