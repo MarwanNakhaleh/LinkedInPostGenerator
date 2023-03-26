@@ -19,6 +19,9 @@ Parameters:
   GSIID:
     Type: String
     Default: ids
+  EventRuleName:
+    Type: String
+    Default: LinkedInPostSchedule
 
 Resources:
   LinkedInPosterLambdaRole:
@@ -115,6 +118,7 @@ Resources:
         - Arn: !GetAtt LinkedInPosterLambda.Arn
           Id: "1"
       RoleArn: !GetAtt LinkedInEventTriggerRole.Arn
+      Name: !Ref EventRuleName
 
   LinkedInPostTable:
     Type: AWS::DynamoDB::Table
@@ -196,3 +200,5 @@ Outputs:
   EventRuleArn:
     Description: ARN of the lambda function
     Value: !GetAtt LinkedInPosterLambdaSchedule.Arn
+    Export:
+      Name: LinkedInPosterLambdaScheduleArn
