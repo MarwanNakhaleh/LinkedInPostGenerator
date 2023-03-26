@@ -11,3 +11,6 @@ I like posting to LinkedIn and sharing my thoughts. I'm just not very consistent
     "onlyFriends": false
 }
 ```
+
+## Limitations
+The LinkedIn token provided has a two month lifespan. Therefore, I will need to update it and add its new value to the CircleCI project settings I have around May 15th, 2023.

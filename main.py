@@ -4,7 +4,7 @@ import json
 
 import requests
 
-from random_selection import get_random_category, get_unposted_post
+from random_selection import get_categories, get_unposted_post, get_random_choice
 from helpers import dynamodb_table
 
 logging.basicConfig(format="%(asctime)s: %(levelname)s: %(message)s")
@@ -102,14 +102,18 @@ def set_has_been_posted_to_true(table, id):
 def lambda_handler(event, context):
     posts_table = dynamodb_table(os.environ["POST_TABLE"])
     categories_table = dynamodb_table(os.environ["CATEGORY_TABLE"])
-    category = get_random_category(categories_table)
-    if category != "":
-        post = get_unposted_post(posts_table, category)
-        try:
-            post_id = post["id"]
-        except KeyError:
-            quit()
-        log.info("Retrieved post " + post_id)
+    all_categories = get_categories(categories_table)
+    while(len(all_categories)) > 0:
+        category = get_random_choice(all_categories)
+        if category != "":
+            post = get_unposted_post(posts_table, category)
+            try:
+                post_id = post["id"]
+                log.info("Retrieved post " + post_id)
+                break
+            except KeyError:
+                all_categories.remove(category)
+                log.warn("No posts available for {}".format(category))
     payload = generate_linkedin_payload(post)
     posted = post_to_linkedin(payload)
     if(posted == 201):

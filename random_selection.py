@@ -22,11 +22,18 @@ def get_unposted_post(table, category):
     except:
         return {}
     
-def get_random_category(table):
+def get_categories(table):
     try:
         response = table.scan()
-        return random.choice(response["Items"])["category"]
+        return [cat["category"] for cat in response["Items"]]
     except Exception as e:
-        log.error("Unable to get table items: " + e)
+        log.error("Unable to get categories from table: " + e)
+        return ""
+    
+def get_random_choice(options):
+    try:
+        return random.choice(options)
+    except Exception as e:
+        log.error("Unable to choose random value: " + e)
         return ""
     
