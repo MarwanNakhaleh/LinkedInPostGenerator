@@ -14,10 +14,10 @@ def get_unposted_post(table, category):
     )
     try:
         if len(resp["Items"]) > 0:
-            log.warn("found unposted post")
+            log.info("found unposted post")
             return random.choice(resp['Items'])
         else:
-            log.info("no posts available")
+            log.warn("no posts available")
             quit()
     except:
         return {}
