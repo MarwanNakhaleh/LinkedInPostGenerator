@@ -190,3 +190,9 @@ Outputs:
     Value: !GetAtt LinkedInCategoryTable.Arn
     Export:
       Name: LinkedInCategoryTableARN
+  LambdaPosterArn:
+    Description: ARN of the lambda function
+    Value: !GetAtt LinkedInPosterLambda.Arn
+  EventRuleArn:
+    Description: ARN of the lambda function
+    Value: !GetAtt LinkedInPosterLambdaSchedule.Arn
